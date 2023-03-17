@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
+import mongoose from "mongoose";
 
 import fileRoutes from "./src/routes/file";
 
@@ -17,6 +18,19 @@ app.use(
     tempFileDir: "/tmp/",
   })
 );
+
+mongoose
+  .connect(MONGO_URI!)
+  .then(() => {
+    console.log("[server]: Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log({
+      message: "[server]: Error connecting to MongoDB:",
+      error: error,
+    });
+    process.exit(1);
+  });
 
 app.use("/api/", fileRoutes);
 
