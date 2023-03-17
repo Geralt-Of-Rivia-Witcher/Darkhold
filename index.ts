@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
 
+import authRoutes from "./src/routes/auth";
 import fileRoutes from "./src/routes/file";
 
 dotenv.config();
@@ -32,6 +33,7 @@ mongoose
     process.exit(1);
   });
 
+app.use("/api/", authRoutes);
 app.use("/api/", fileRoutes);
 
 app.listen(PORT, () => {
