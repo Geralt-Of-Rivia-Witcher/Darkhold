@@ -1,0 +1,41 @@
+import { model, Schema } from "mongoose";
+
+const userSchema = new Schema(
+  {
+    userName: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    masterKey: {
+      type: String,
+      required: true,
+    },
+    files: [
+      {
+        fileName: {
+          type: String,
+          required: true,
+        },
+        fileUrl: {
+          type: String,
+          required: true,
+        },
+        md5Hash: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const User = model("User", userSchema);
+
+export default User;
