@@ -7,6 +7,14 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/auth";
 import fileRoutes from "./src/routes/file";
 
+declare global {
+  namespace Express {
+    interface Request {
+      user: any;
+    }
+  }
+}
+
 dotenv.config();
 
 const app = express();

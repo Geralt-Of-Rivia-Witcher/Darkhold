@@ -5,7 +5,10 @@ import crypto from "crypto";
 
 import * as aesEncrpytion from "../functions/aesEncryption";
 
-export const EncryptAndUploadFile = async (req: Request, res: Response) => {
+export const EncryptAndUploadFile = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const file = req.files?.file as fileUpload.UploadedFile;
   var chunkSize: number = Math.floor(file.size / 16);
 
@@ -13,10 +16,14 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
     chunkSize++;
   }
 
-  const key = "12345678901234567890123456789012";
+  const masterKey = req.user.masterKey;
   const iv = "12345678901234567890123456789012";
 
-  const keyHash: string = crypto.createHash("sha512").update(key).digest("hex");
+  const keyHash: string = crypto
+    .createHash("sha512")
+    .update(masterKey)
+    .digest("hex");
+
   const ivHash: string = crypto.createHash("sha512").update(iv).digest("hex");
 
   const readStream = fs.createReadStream(file.tempFilePath, {

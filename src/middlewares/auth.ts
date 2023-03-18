@@ -7,12 +7,8 @@ interface jwtPayload {
   userId: string;
 }
 
-interface apiRequest extends Request {
-  user: any;
-}
-
 export const verify = async (
-  req: apiRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<any> => {

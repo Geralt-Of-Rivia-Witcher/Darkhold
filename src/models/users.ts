@@ -10,8 +10,16 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    masterKey: {
+    rsaPublicKey: {
       type: String,
+      required: true,
+    },
+    rsaPrivateKey: {
+      type: String,
+      required: true,
+    },
+    encryptedMasterKey: {
+      type: Buffer,
       required: true,
     },
     files: [
