@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post("/uploadFile", authMiddleware.verify, file.EncryptAndUploadFile);
 
+router.get("/getFileList", authMiddleware.verify, file.getFileList);
+
 router.get(
   "/downloadFile/:fileId",
   authMiddleware.verify,

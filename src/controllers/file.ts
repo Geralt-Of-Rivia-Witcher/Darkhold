@@ -97,6 +97,35 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
   }
 };
 
+export const getFileList = async (req: Request, res: Response) => {
+  try {
+    const files = await userModel.aggregate([
+      {
+        $match: {
+          _id: req.user._id,
+        },
+      },
+      {
+        $unwind: "$files",
+      },
+      {
+        $project: {
+          _id: "$files._id",
+          fileName: "$files.fileName",
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      files: files,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 export const decryptAndDownloadFile = async (req: Request, res: Response) => {
   try {
     const requestedFile = (
