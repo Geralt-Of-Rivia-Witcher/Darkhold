@@ -153,9 +153,9 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
 
     const EncryptedFile = await AWS.downloadFromS3(requestedFile.File.fileUrl);
 
-    fs.writeFileSync("New", EncryptedFile);
+    fs.writeFileSync("temp", EncryptedFile);
 
-    const readStream = fs.createReadStream("./New", {
+    const readStream = fs.createReadStream("./temp", {
       highWaterMark: requestedFile.File.chunkSize,
     });
 
@@ -200,7 +200,10 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
     readStream.on("end", () => {
       fs.writeFileSync(requestedFile.File.fileName, Buffer.concat(fileData));
 
-      return res.status(200).download(requestedFile.File.fileName);
+      res.status(200).download(requestedFile.File.fileName, () => {
+        fs.unlinkSync("./temp");
+        fs.unlinkSync(`${requestedFile.File.fileName}`);
+      });
     });
   } catch (error) {
     console.log(error);
