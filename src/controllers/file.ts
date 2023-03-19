@@ -29,14 +29,15 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
       req.user.encryptedMasterKey
     );
 
-    const iv = "12345678901234567890123456789012";
-
     const keyHash: string = crypto
       .createHash("sha512")
       .update(decryptedMasterKey)
       .digest("hex");
 
-    const ivHash: string = crypto.createHash("sha512").update(iv).digest("hex");
+    const ivHash: string = crypto
+      .createHash("sha512")
+      .update(process.env.AWS_IV!)
+      .digest("hex");
 
     const readStream = fs.createReadStream(file.tempFilePath, {
       highWaterMark: chunkSize,
@@ -48,13 +49,13 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
     readStream.on("data", (chunk: Buffer) => {
       const aesKey: Buffer = crypto.scryptSync(
         keyHash.substring(start * 8, start * 8 + 8),
-        "This is a salt",
+        process.env.KDF_SALT!,
         32
       );
 
       const aesIv: Buffer = crypto.scryptSync(
         ivHash.substring(start * 8, start * 8 + 8),
-        "This is a salt",
+        process.env.KDF_SALT!,
         16
       );
 
@@ -168,14 +169,15 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
       req.user.encryptedMasterKey
     );
 
-    const iv = "12345678901234567890123456789012";
-
     const keyHash: string = crypto
       .createHash("sha512")
       .update(decryptedMasterKey)
       .digest("hex");
 
-    const ivHash: string = crypto.createHash("sha512").update(iv).digest("hex");
+    const ivHash: string = crypto
+      .createHash("sha512")
+      .update(process.env.AWS_IV!)
+      .digest("hex");
 
     var fileData: Buffer[] = [],
       start = 0;
@@ -183,13 +185,13 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
     readStream.on("data", (chunk: Buffer) => {
       const aesKey: Buffer = crypto.scryptSync(
         keyHash.substring(start * 8, start * 8 + 8),
-        "This is a salt",
+        process.env.KDF_SALT!,
         32
       );
 
       const aesIv: Buffer = crypto.scryptSync(
         ivHash.substring(start * 8, start * 8 + 8),
-        "This is a salt",
+        process.env.KDF_SALT!,
         16
       );
 
