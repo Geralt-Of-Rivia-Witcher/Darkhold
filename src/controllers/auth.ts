@@ -47,16 +47,6 @@ export const signUp = async (
       encryptedMasterKey: encryptedMasterKey,
     });
 
-    // const decryptedData = crypto.privateDecrypt(
-    //   {
-    //     key: user.rsaPrivateKey,
-    //     padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-    //     oaepHash: "sha256",
-    //   },
-    //   user.encryptedMasterKey
-    // );
-    // console.log(decryptedData.toString());
-
     return res.status(200).json({
       message: "Signed up successfully",
     });

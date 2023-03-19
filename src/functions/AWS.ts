@@ -8,10 +8,17 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-export const uploadToS3 = async (data, key) => {
-  const file = await s3.upload({
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: key,
-    Body: data,
-  });
+export const uploadToS3 = async (
+  data: Buffer,
+  key: string
+): Promise<string> => {
+  const file = await s3
+    .upload({
+      Bucket: process.env.AWS_BUCKET_NAME!,
+      Key: key,
+      Body: data,
+    })
+    .promise();
+
+  return file.Location;
 };
