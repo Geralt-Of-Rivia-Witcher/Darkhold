@@ -36,6 +36,10 @@ const userSchema = new Schema(
           type: String,
           required: true,
         },
+        chunkSize: {
+          type: Number,
+          required: true,
+        },
       },
     ],
   },

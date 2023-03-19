@@ -2,15 +2,13 @@ import { Request, Response } from "express";
 import fileUpload from "express-fileupload";
 import fs from "fs";
 import crypto from "crypto";
+import mongoose from "mongoose";
 
 import * as aesEncrpytion from "../functions/aesEncryption";
 import * as AWS from "../functions/AWS";
 import userModel from "../models/users";
 
-export const EncryptAndUploadFile = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+export const EncryptAndUploadFile = async (req: Request, res: Response) => {
   try {
     const file = req.files?.file as fileUpload.UploadedFile;
     var chunkSize: number = Math.floor(file.size / 16);
@@ -82,14 +80,15 @@ export const EncryptAndUploadFile = async (
               fileName: file.name,
               fileUrl: fileUrl,
               md5Hash: md5Hash,
+              chunkSize: Buffer.byteLength(encryptedData[0]),
             },
           },
         }
       );
-    });
 
-    return res.status(201).json({
-      message: "File uploaded successfully",
+      return res.status(201).json({
+        message: "File uploaded successfully",
+      });
     });
   } catch (error) {
     console.log(error);
@@ -98,18 +97,85 @@ export const EncryptAndUploadFile = async (
   }
 };
 
-// var newData: Buffer[] = [];
-// for (var i = 0; i < 16; i++) {
-//   const aesKey: Buffer = crypto.scryptSync(
-//     keyHash.substring(i * 8, i * 8 + 8),
-//     "This is a salt",
-//     32
-//   );
-//   const aesIv: Buffer = crypto.scryptSync(
-//     ivHash.substring(i * 8, i * 8 + 8),
-//     "This is a salt",
-//     16
-//   );
-//   newData.push(aesEncrpytion.decryptWithAES(data[i], aesKey, aesIv));
-// }
-// fs.writeFileSync("New", Buffer.concat(encryptedData));
+export const decryptAndDownloadFile = async (req: Request, res: Response) => {
+  try {
+    const requestedFile = (
+      await userModel.aggregate([
+        {
+          $match: {
+            _id: req.user._id,
+          },
+        },
+        {
+          $unwind: "$files",
+        },
+        {
+          $match: {
+            "files._id": new mongoose.Types.ObjectId(req.params.fileId),
+          },
+        },
+        {
+          $project: {
+            File: "$files",
+          },
+        },
+      ])
+    )[0];
+
+    const EncryptedFile = await AWS.downloadFromS3(requestedFile.File.fileUrl);
+
+    fs.writeFileSync("New", EncryptedFile);
+
+    const readStream = fs.createReadStream("./New", {
+      highWaterMark: requestedFile.File.chunkSize,
+    });
+
+    const decryptedMasterKey = crypto.privateDecrypt(
+      {
+        key: req.user.rsaPrivateKey,
+        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+        oaepHash: "sha256",
+      },
+      req.user.encryptedMasterKey
+    );
+
+    const iv = "12345678901234567890123456789012";
+
+    const keyHash: string = crypto
+      .createHash("sha512")
+      .update(decryptedMasterKey)
+      .digest("hex");
+
+    const ivHash: string = crypto.createHash("sha512").update(iv).digest("hex");
+
+    var fileData: Buffer[] = [],
+      start = 0;
+
+    readStream.on("data", (chunk: Buffer) => {
+      const aesKey: Buffer = crypto.scryptSync(
+        keyHash.substring(start * 8, start * 8 + 8),
+        "This is a salt",
+        32
+      );
+
+      const aesIv: Buffer = crypto.scryptSync(
+        ivHash.substring(start * 8, start * 8 + 8),
+        "This is a salt",
+        16
+      );
+
+      fileData.push(aesEncrpytion.decryptWithAES(chunk, aesKey, aesIv));
+      start++;
+    });
+
+    readStream.on("end", () => {
+      fs.writeFileSync(requestedFile.File.fileName, Buffer.concat(fileData));
+
+      return res.status(200).download(requestedFile.File.fileName);
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};

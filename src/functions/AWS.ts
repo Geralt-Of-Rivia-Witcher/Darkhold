@@ -22,3 +22,14 @@ export const uploadToS3 = async (
 
   return file.Location;
 };
+
+export const downloadFromS3 = async (key: string): Promise<Buffer> => {
+  const file = await s3
+    .getObject({
+      Bucket: process.env.AWS_BUCKET_NAME!,
+      Key: key.substring(key.indexOf(".com/") + 5),
+    })
+    .promise();
+
+  return file.Body as Buffer;
+};
