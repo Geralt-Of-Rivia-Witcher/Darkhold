@@ -65,11 +65,9 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
 
     readStream.on("end", async () => {
       const encryptedFile = Buffer.concat(encryptedData);
+      const fileKey = `${req.user.userName}/${crypto.randomUUID()}`;
 
-      const fileUrl = await AWS.uploadToS3(
-        encryptedFile,
-        `${req.user.userName}/${crypto.randomUUID()}`
-      );
+      await AWS.uploadToS3(encryptedFile, fileKey);
 
       await userModel.findOneAndUpdate(
         {
@@ -79,7 +77,7 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
           $push: {
             files: {
               fileName: file.name,
-              fileUrl: fileUrl,
+              fileKey: fileKey,
               md5Hash: md5Hash,
               chunkSize: Buffer.byteLength(encryptedData[0]),
             },
@@ -152,7 +150,7 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
       ])
     )[0];
 
-    const EncryptedFile = await AWS.downloadFromS3(requestedFile.File.fileUrl);
+    const EncryptedFile = await AWS.downloadFromS3(requestedFile.File.fileKey);
 
     fs.writeFileSync("temp", EncryptedFile);
 

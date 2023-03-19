@@ -1,35 +1,47 @@
-import AWS from "aws-sdk";
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3Client = new S3Client({
   region: process.env.AWS_REGION,
 });
-
-const s3 = new AWS.S3();
 
 export const uploadToS3 = async (
   data: Buffer,
   key: string
-): Promise<string> => {
-  const file = await s3
-    .upload({
+): Promise<object> => {
+  const file = await s3Client.send(
+    new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME!,
       Key: key,
       Body: data,
     })
-    .promise();
+  );
 
-  return file.Location;
+  return file;
 };
 
 export const downloadFromS3 = async (key: string): Promise<Buffer> => {
-  const file = await s3
-    .getObject({
-      Bucket: process.env.AWS_BUCKET_NAME!,
-      Key: key.substring(key.indexOf(".com/") + 5),
-    })
-    .promise();
+  return new Promise(async (resolve, reject) => {
+    const response = await s3Client.send(
+      new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME!,
+        Key: key,
+      })
+    );
 
-  return file.Body as Buffer;
+    let responseDataChunks: Buffer[] = [];
+
+    response.Body?.once("error", (err: any) => reject(err));
+
+    response.Body?.on("data", (chunk: Buffer) =>
+      responseDataChunks.push(chunk)
+    );
+
+    response.Body?.once("end", () =>
+      resolve(Buffer.concat(responseDataChunks))
+    );
+  });
 };
