@@ -96,7 +96,10 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
   }
 };
 
-export const getFileList = async (req: Request, res: Response) => {
+export const getFileList = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const files = await userModel.aggregate([
       {
