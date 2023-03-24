@@ -2,11 +2,9 @@ import { Request, Response } from "express";
 import fileUpload from "express-fileupload";
 import fs from "fs";
 import crypto from "crypto";
-import mongoose from "mongoose";
 
 import * as aesEncrpytion from "../functions/aesEncryption";
 import * as AWS from "../functions/AWS";
-import userModel from "../models/users";
 import fileModel from "../models/files";
 
 export const EncryptAndUploadFile = async (req: Request, res: Response) => {
@@ -138,9 +136,9 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
 
     const EncryptedFile = await AWS.downloadFromS3(requestedFile.fileKey);
 
-    fs.writeFileSync("temp", EncryptedFile);
+    fs.writeFileSync(`${req.user.userName}-temp`, EncryptedFile);
 
-    const readStream = fs.createReadStream("./temp", {
+    const readStream = fs.createReadStream(`${req.user.userName}-temp`, {
       highWaterMark: requestedFile.chunkSize,
     });
 
@@ -187,7 +185,7 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
       fs.writeFileSync(requestedFile.fileName, Buffer.concat(fileData));
 
       res.status(200).download(requestedFile.fileName, () => {
-        fs.unlinkSync("./temp");
+        fs.unlinkSync(`${req.user.userName}-temp`);
         fs.unlinkSync(`${requestedFile.fileName}`);
       });
     });
