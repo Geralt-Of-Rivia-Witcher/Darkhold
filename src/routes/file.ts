@@ -17,4 +17,10 @@ router.get(
 
 router.post("/shareFile", authMiddleware.verify, file.shareFile);
 
+router.post(
+  "/removeAccessFromFile",
+  authMiddleware.verify,
+  file.removeAccessFromFile
+);
+
 export default router;
