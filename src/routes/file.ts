@@ -15,4 +15,6 @@ router.get(
   file.decryptAndDownloadFile
 );
 
+router.post("/shareFile", authMiddleware.verify, file.shareFile);
+
 export default router;

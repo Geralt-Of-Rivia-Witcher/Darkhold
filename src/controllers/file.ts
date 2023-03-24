@@ -195,3 +195,47 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const shareFile = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const requestedFile = await fileModel.findOne({
+      _id: req.body.fileId,
+    });
+
+    if (!requestedFile) {
+      return res.status(404).json({
+        message: "File not found",
+      });
+    }
+
+    if (!requestedFile.owner.equals(req.user._id)) {
+      return res.status(403).json({
+        message: "Only the owner of the file can share it",
+      });
+    }
+
+    if (!requestedFile.sharedWith.includes(req.body.shareWith)) {
+      await fileModel.updateOne(
+        {
+          _id: req.body.fileId,
+        },
+        {
+          $push: {
+            sharedWith: req.body.shareWith,
+          },
+        }
+      );
+    }
+
+    return res.status(200).json({
+      message: "File shared successfully",
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
