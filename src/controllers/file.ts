@@ -98,14 +98,25 @@ export const getFileList = async (
     const files = await fileModel.aggregate([
       {
         $match: {
-          owner: req.user._id,
+          $or: [{ owner: req.user._id }, { sharedWith: req.user._id }],
         },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
+        },
+      },
+      {
+        $unwind: "$owner",
       },
       {
         $project: {
           _id: "$_id",
           fileName: "$fileName",
-          sharedWith: "$sharedWith",
+          owner: "$owner.userName",
         },
       },
     ]);
