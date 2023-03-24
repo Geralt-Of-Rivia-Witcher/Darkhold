@@ -97,24 +97,23 @@ export const getFileList = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const files = await userModel.aggregate([
+    const files = await fileModel.aggregate([
       {
         $match: {
-          _id: req.user._id,
+          owner: req.user._id,
         },
       },
       {
-        $unwind: "$files",
-      },
-      {
         $project: {
-          _id: "$files._id",
-          fileName: "$files.fileName",
+          _id: "$_id",
+          fileName: "$fileName",
+          sharedWith: "$sharedWith",
         },
       },
     ]);
 
     return res.status(200).json({
+      message: "File list fetched successfully",
       files: files,
     });
   } catch (error) {
@@ -126,44 +125,32 @@ export const getFileList = async (
 
 export const decryptAndDownloadFile = async (req: Request, res: Response) => {
   try {
-    const requestedFile = (
-      await userModel.aggregate([
-        {
-          $match: {
-            _id: req.user._id,
-          },
-        },
-        {
-          $unwind: "$files",
-        },
-        {
-          $match: {
-            "files._id": new mongoose.Types.ObjectId(req.params.fileId),
-          },
-        },
-        {
-          $project: {
-            File: "$files",
-          },
-        },
-      ])
-    )[0];
+    const requestedFile = await fileModel.findOne({
+      _id: req.params.fileId,
+      owner: req.user._id,
+    });
 
-    const EncryptedFile = await AWS.downloadFromS3(requestedFile.File.fileKey);
+    if (!requestedFile) {
+      return res.status(404).json({
+        message: "File not found",
+      });
+    }
+
+    const EncryptedFile = await AWS.downloadFromS3(requestedFile.fileKey);
 
     fs.writeFileSync("temp", EncryptedFile);
 
     const readStream = fs.createReadStream("./temp", {
-      highWaterMark: requestedFile.File.chunkSize,
+      highWaterMark: requestedFile.chunkSize,
     });
 
     const decryptedMasterKey = crypto.privateDecrypt(
       {
-        key: req.user.rsaPrivateKey,
+        key: process.env.RSA_PRIVATE_KEY!,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
         oaepHash: "sha256",
       },
-      req.user.encryptedMasterKey
+      requestedFile.encryptedMasterKey!
     );
 
     const keyHash: string = crypto
@@ -173,7 +160,7 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
 
     const ivHash: string = crypto
       .createHash("sha512")
-      .update(process.env.AWS_IV!)
+      .update(process.env.AES_IV!)
       .digest("hex");
 
     var fileData: Buffer[] = [],
@@ -197,11 +184,11 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
     });
 
     readStream.on("end", () => {
-      fs.writeFileSync(requestedFile.File.fileName, Buffer.concat(fileData));
+      fs.writeFileSync(requestedFile.fileName, Buffer.concat(fileData));
 
-      res.status(200).download(requestedFile.File.fileName, () => {
+      res.status(200).download(requestedFile.fileName, () => {
         fs.unlinkSync("./temp");
-        fs.unlinkSync(`${requestedFile.File.fileName}`);
+        fs.unlinkSync(`${requestedFile.fileName}`);
       });
     });
   } catch (error) {

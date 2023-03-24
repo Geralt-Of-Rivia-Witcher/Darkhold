@@ -3,7 +3,8 @@ import { model, Schema } from "mongoose";
 const fileSchema = new Schema(
   {
     encryptedMasterKey: {
-      type: String,
+      type: Buffer,
+      required: true,
     },
     fileName: {
       type: String,
