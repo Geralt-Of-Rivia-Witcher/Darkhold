@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import * as aesEncrpytion from "../functions/aesEncryption";
 import * as AWS from "../functions/AWS";
 import fileModel from "../models/files";
+import userModel from "../models/users";
 
 export const EncryptAndUploadFile = async (req: Request, res: Response) => {
   try {
@@ -239,6 +240,16 @@ export const shareFile = async (
       });
     }
 
+    const user = await userModel.findOne({
+      userName: req.body.shareWith,
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
     if (!requestedFile.sharedWith.includes(req.body.shareWith)) {
       await fileModel.updateOne(
         {
@@ -246,7 +257,7 @@ export const shareFile = async (
         },
         {
           $push: {
-            sharedWith: req.body.shareWith,
+            sharedWith: user._id,
           },
         }
       );
