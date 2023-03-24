@@ -5,21 +5,10 @@ const userSchema = new Schema(
     userName: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,
-      required: true,
-    },
-    rsaPublicKey: {
-      type: String,
-      required: true,
-    },
-    rsaPrivateKey: {
-      type: String,
-      required: true,
-    },
-    encryptedMasterKey: {
-      type: Buffer,
       required: true,
     },
     files: [
