@@ -136,12 +136,22 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
   try {
     const requestedFile = await fileModel.findOne({
       _id: req.params.fileId,
-      owner: req.user._id,
     });
 
     if (!requestedFile) {
       return res.status(404).json({
         message: "File not found",
+      });
+    }
+
+    if (
+      !requestedFile.owner.equals(req.user._id) &&
+      !requestedFile.sharedWith.some((userIDs) => {
+        return userIDs.equals(req.user._id);
+      })
+    ) {
+      return res.status(403).json({
+        message: "You are not authorized to download this file",
       });
     }
 
