@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import * as aesEncrpytion from "../functions/aesEncryption";
 import * as AWS from "../functions/AWS";
 import userModel from "../models/users";
+import fileModel from "../models/files";
 
 export const EncryptAndUploadFile = async (req: Request, res: Response) => {
   try {
@@ -20,23 +21,25 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
       chunkSize++;
     }
 
-    const decryptedMasterKey = crypto.privateDecrypt(
+    const masterKey = crypto.randomBytes(32);
+
+    const encryptedMasterKey = crypto.publicEncrypt(
       {
-        key: req.user.rsaPrivateKey,
+        key: process.env.RSA_PUBLIC_KEY!,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
         oaepHash: "sha256",
       },
-      req.user.encryptedMasterKey
+      masterKey
     );
 
     const keyHash: string = crypto
       .createHash("sha512")
-      .update(decryptedMasterKey)
+      .update(masterKey)
       .digest("hex");
 
     const ivHash: string = crypto
       .createHash("sha512")
-      .update(process.env.AWS_IV!)
+      .update(process.env.AES_IV!)
       .digest("hex");
 
     const readStream = fs.createReadStream(file.tempFilePath, {
@@ -69,21 +72,14 @@ export const EncryptAndUploadFile = async (req: Request, res: Response) => {
 
       await AWS.uploadToS3(encryptedFile, fileKey);
 
-      await userModel.findOneAndUpdate(
-        {
-          _id: req.user._id,
-        },
-        {
-          $push: {
-            files: {
-              fileName: file.name,
-              fileKey: fileKey,
-              md5Hash: md5Hash,
-              chunkSize: Buffer.byteLength(encryptedData[0]),
-            },
-          },
-        }
-      );
+      await fileModel.create({
+        encryptedMasterKey: encryptedMasterKey,
+        fileName: file.name,
+        fileKey: fileKey,
+        md5Hash: md5Hash,
+        chunkSize: Buffer.byteLength(encryptedData[0]),
+        owner: req.user._id,
+      });
 
       return res.status(201).json({
         message: "File uploaded successfully",

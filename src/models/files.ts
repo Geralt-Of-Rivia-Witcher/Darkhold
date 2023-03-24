@@ -24,6 +24,7 @@ const fileSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     sharedWith: [
       {
@@ -37,6 +38,6 @@ const fileSchema = new Schema(
   }
 );
 
-const File = model("User", fileSchema);
+const File = model("File", fileSchema);
 
 export default File;
