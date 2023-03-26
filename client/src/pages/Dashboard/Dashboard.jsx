@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
@@ -60,84 +59,80 @@ function Dashboard() {
       })
       .then((response) => {
         fetchFilesList();
-        document.getElementById("credential-container").style = "none";
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
-  return useSelector((state) => {
-    return state.authenticationReducer.isLoggedIn ? (
-      <>
-        <Navbar />
-        <div className="credential-container" id="credential-container">
-          <Grid container>
-            <div className="credential-background-image"></div>
-            {fetchedFileList?.map((eachFile, index) => {
-              return (
-                <Grid
-                  item
-                  xl={2}
-                  lg={3}
-                  md={3}
-                  sm={4}
-                  xs={6}
-                  className="credential-grid"
-                  key={index}
-                  onClick={(event) => {
-                    document.getElementById("credential-container").style =
-                      "filter:blur(100px); pointer-events: none";
-                    // setShowCredentialModal(true);
-                    downloadFile(eachFile);
-                  }}
-                >
-                  <EachCredentialContainer fileName={eachFile.fileName} />
-                </Grid>
-              );
-            })}
-            <input
-              type="file"
-              id="fileUpload"
-              style={{ display: "none" }}
-              onChange={(event) => {
-                uploadFile(event.target.files[0]);
-              }}
-            />
-            <Grid
-              item
-              xl={2}
-              lg={3}
-              md={3}
-              sm={4}
-              xs={6}
-              className="credential-grid"
-            >
-              <div
-                className="each-credential-container add-new-credential"
-                onClick={() => {
+  // return state.authenticationReducer.isLoggedIn ? (
+  return document.cookie.length > 12 ? (
+    <>
+      <Navbar />
+      <div className="credential-container" id="credential-container">
+        <Grid container>
+          <div className="credential-background-image"></div>
+          {fetchedFileList?.map((eachFile, index) => {
+            return (
+              <Grid
+                item
+                xl={2}
+                lg={3}
+                md={3}
+                sm={4}
+                xs={6}
+                className="credential-grid"
+                key={index}
+                onClick={(event) => {
                   document.getElementById("credential-container").style =
-                    "filter:blur(100px); pointer-events: none;";
-                  document.getElementById("fileUpload").click();
+                    "filter:blur(100px); pointer-events: none";
+                  // setShowCredentialModal(true);
+                  downloadFile(eachFile);
                 }}
               >
-                <h3 className="each-credential-platfrom">Click to Upload</h3>
-              </div>
-            </Grid>
+                <EachCredentialContainer fileName={eachFile.fileName} />
+              </Grid>
+            );
+          })}
+          <input
+            type="file"
+            id="fileUpload"
+            style={{ display: "none" }}
+            onChange={(event) => {
+              uploadFile(event.target.files[0]);
+            }}
+          />
+          <Grid
+            item
+            xl={2}
+            lg={3}
+            md={3}
+            sm={4}
+            xs={6}
+            className="credential-grid"
+          >
+            <div
+              className="each-credential-container add-new-credential"
+              onClick={() => {
+                document.getElementById("fileUpload").click();
+              }}
+            >
+              <h3 className="each-credential-platfrom">Click to Upload</h3>
+            </div>
           </Grid>
-        </div>
-        {/* {showCredentialModal ? (
+        </Grid>
+      </div>
+      {/* {showCredentialModal ? (
           <ShowCredential
             fetchedCredentials={fetchedCredentials[clickedIndex]}
             setShowCredentialModal={setShowCredentialModal}
             setFetchedCredentials={setFetchedCredentials}
           />
         ) : null} */}
-      </>
-    ) : (
-      <Navigate to="/login" />
-    );
-  });
+    </>
+  ) : (
+    <Navigate to="/login" />
+  );
 }
 
 export default Dashboard;

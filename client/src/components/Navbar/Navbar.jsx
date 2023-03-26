@@ -5,25 +5,16 @@ import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 
 import { BACKEND_URL } from "../../constants/index.js";
-import { logoutAction } from "../../redux/Authentication/authenticationAction.js";
 
 import "./Navbar.styles.css";
 
 function Navbar() {
-  const dispatch = useDispatch();
   var username, isLoggedIn;
-
-  useSelector((state) => {
-    username = state.authenticationReducer.username;
-    isLoggedIn = state.authenticationReducer.isLoggedIn;
-  });
 
   const [anchorElUser, setAnchorElUser] = useState(null);
   const open = Boolean(anchorElUser);
@@ -42,7 +33,6 @@ function Navbar() {
       .then((success) => {
         handleCloseUserMenu();
         toast(success.data.message, { type: "success" });
-        dispatch(logoutAction());
         <Navigate to="/" replace />;
       })
       .catch((error) => {

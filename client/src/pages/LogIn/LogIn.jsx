@@ -4,18 +4,15 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import { BACKEND_URL } from "../../constants/index.js";
-import { loginAction } from "../../redux/Authentication/authenticationAction.js";
 
 import "./Login.styles.css";
 
 function SignUp() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -23,8 +20,7 @@ function SignUp() {
     axios
       .get(`${BACKEND_URL}/check-logged-in`, { withCredentials: true })
       .then((success) => {
-        dispatch(loginAction({ username: success.data.username }));
-        navigate("/credential");
+        navigate("/dashboard");
       })
       .catch((error) => {});
   }, []);
@@ -42,8 +38,7 @@ function SignUp() {
       )
       .then((success) => {
         toast(success.data.message, { type: "success" });
-        dispatch(loginAction({ username: success.data.username }));
-        navigate("/credential");
+        navigate("/dashboard");
       })
       .catch((error) => {
         toast(error.response.data.message, { type: "error" });
