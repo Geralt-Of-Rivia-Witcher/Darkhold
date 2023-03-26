@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import authRoutes from "./src/routes/auth";
 import fileRoutes from "./src/routes/file";
@@ -29,6 +30,7 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use(cors());
 
 mongoose
   .connect(MONGO_URI!)
