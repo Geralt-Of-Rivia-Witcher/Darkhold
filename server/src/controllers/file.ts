@@ -207,10 +207,12 @@ export const decryptAndDownloadFile = async (req: Request, res: Response) => {
     readStream.on("end", () => {
       fs.writeFileSync(requestedFile.fileName, Buffer.concat(fileData));
 
-      res.status(200).download(requestedFile.fileName, () => {
-        fs.unlinkSync(`${req.user.userName}-temp`);
-        fs.unlinkSync(`${requestedFile.fileName}`);
-      });
+      res
+        .status(200)
+        .download(requestedFile.fileName, requestedFile.fileName, () => {
+          fs.unlinkSync(`${req.user.userName}-temp`);
+          fs.unlinkSync(`${requestedFile.fileName}`);
+        });
     });
   } catch (error) {
     console.log(error);
