@@ -1,0 +1,38 @@
+.home-background-image {
+    background-image: url("../../images/home-page.jpg");
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.home-div {
+    text-align: center;
+}
+
+.home-page-heading {
+    color: white !important;
+    font-size: calc(50px + (112 - 50) * ((100vw - 300px) / (1600 - 300))); /* 8rem */
+    margin-top: calc(155px + (190 - 155) * ((100vw - 300px) / (1600 - 300))); /* 10% */
+    font-family: 'Montserrat Subrayada', sans-serif;
+}
+
+.home-button-container {
+    margin-top: calc(100px + (175 - 100) * ((100vw - 300px) / (1600 - 300))); /* 10%; */
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: calc(50px + (90 - 50) * ((100vw - 300px) / (1600 - 300))); /* 100px; */
+}
+
+.home-button {
+    width: calc(188px + (268 - 188) * ((100vw - 300px) / (1600 - 300))); /* 15% => 288px; */
+    border-radius: 30px !important;
+    font-family: 'Quicksand', sans-serif !important;
+    font-size: 1rem !important;
+    padding: 0px !important;
+}

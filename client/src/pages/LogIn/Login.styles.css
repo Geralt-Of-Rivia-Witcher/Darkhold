@@ -1,0 +1,90 @@
+.login-background-image {
+    background-image: linear-gradient(to left, transparent, rgb(0, 0, 0)),
+        url("../../images/login-page.jpg");
+    height: 100vh;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.form-container {
+    padding-left: 8%;
+    padding-top: 8%;
+}
+
+.heading {
+    color: #fff;
+    font-size: calc(30px + (44 - 30) * ((100vw - 300px) / (1600 - 300))) !important; /* 3rem */
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.text-field {
+    width: 30%;
+    border-radius: 0.5rem;
+}
+
+.MuiOutlinedInput-root {
+    color: white !important;
+    font-size: larger !important;
+    height: 65px !important;
+    margin-bottom: 1rem;
+    padding-left: 20px !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+    border: 3px solid #fff !important;
+    border-radius: 30px !important;
+    color: aliceblue !important;
+}
+
+.submit-button {
+    width: 30%;
+    height: 8%;
+    border-radius: 30px !important;
+    font-family: 'Quicksand', sans-serif !important;
+    font-size: 1rem !important;
+    padding: 0px !important;
+}
+
+@media (max-width: 1025px)
+{
+    .text-field {
+        width: 50%;
+    }
+    .submit-button {
+        width: 50%;
+    }
+    .form-container {
+        margin-top: 4%;
+    }
+}
+
+@media (max-width: 769px)
+{
+    .text-field {
+        width: 60%;
+    }
+    .submit-button {
+        width: 60%;
+    }
+    .form-container {
+        margin-top: 8%;
+    }
+}
+
+@media (max-width: 481px)
+{
+    .text-field {
+        width: 85%;
+    }
+    .submit-button {
+        width: 85%;
+    }
+    .form-container {
+        margin-top: 15%;
+    }
+}

@@ -1,0 +1,15 @@
+.navbar-container {
+    width: 80%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-heading {
+    margin: 10px auto !important;
+    display: inline-block;
+    color: #744ace;
+    font-family: 'Darker Grotesque', sans-serif;
+    font-size: calc(22px + (36 - 22) * ((100vw - 300px) / (1600 - 300))) /* 2.5rem */
+}

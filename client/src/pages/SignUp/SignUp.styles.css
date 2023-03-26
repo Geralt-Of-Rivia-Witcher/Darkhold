@@ -1,0 +1,12 @@
+.signup-background-image {
+    background-image: linear-gradient(to left, transparent, #000),
+        url("../../images/signup-page.jpg");
+    height: 100vh;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
