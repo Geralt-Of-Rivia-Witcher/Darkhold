@@ -46,4 +46,6 @@
     color: #ffffff;
     font-size: calc(15px + (22 - 15) * ((100vw - 300px) / (1600 - 300))); /* 1.5rem */
     font-family: 'Source Sans Pro', sans-serif;
+    text-align: center;
+    margin: auto;
 }

@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import { BACKEND_URL } from "../../constants/index.js";
 import EachCredentialContainer from "./EachCredentialContainer";
-import ShowCredential from "../../components/ShowCredential/ShowCredential.jsx";
+import FileInfo from "../../components/ShowCredential/FileInfo.jsx";
 
 import "./Dashboard.styles.css";
 
@@ -14,7 +14,8 @@ function Dashboard() {
   useEffect(fetchFilesList, []);
 
   const [fetchedFileList, setFetchedFileList] = useState([]);
-  const [showCredentialModal, setShowCredentialModal] = useState(false);
+  const [showFileInfoModal, setShowFileInfoModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   function fetchFilesList() {
     axios
@@ -65,7 +66,6 @@ function Dashboard() {
       });
   }
 
-  // return state.authenticationReducer.isLoggedIn ? (
   return document.cookie.length > 12 ? (
     <>
       <Navbar />
@@ -86,8 +86,9 @@ function Dashboard() {
                 onClick={(event) => {
                   document.getElementById("credential-container").style =
                     "filter:blur(100px); pointer-events: none";
-                  // setShowCredentialModal(true);
-                  downloadFile(eachFile);
+                  setShowFileInfoModal(true);
+                  // downloadFile(eachFile);
+                  setSelectedFile(eachFile);
                 }}
               >
                 <EachCredentialContainer fileName={eachFile.fileName} />
@@ -122,13 +123,14 @@ function Dashboard() {
           </Grid>
         </Grid>
       </div>
-      {/* {showCredentialModal ? (
-          <ShowCredential
-            fetchedCredentials={fetchedCredentials[clickedIndex]}
-            setShowCredentialModal={setShowCredentialModal}
-            setFetchedCredentials={setFetchedCredentials}
-          />
-        ) : null} */}
+      {showFileInfoModal ? (
+        <FileInfo
+          // fetchedCredentials={fetchedCredentials[clickedIndex]}
+          setShowFileInfoModal={setShowFileInfoModal}
+          // setFetchedCredentials={setFetchedCredentials}
+          selectedFile={selectedFile}
+        />
+      ) : null}
     </>
   ) : (
     <Navigate to="/login" />

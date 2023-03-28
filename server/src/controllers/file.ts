@@ -112,13 +112,28 @@ export const getFileList = async (
         },
       },
       {
+        $lookup: {
+          from: "users",
+          localField: "sharedWith",
+          foreignField: "_id",
+          as: "sharedWith",
+        },
+      },
+      {
         $unwind: "$owner",
       },
       {
-        $project: {
+        $unwind: {
+          path: "$sharedWith",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
           _id: "$_id",
-          fileName: "$fileName",
-          owner: "$owner.userName",
+          fileName: { $first: "$fileName" },
+          owner: { $first: "$owner.userName" },
+          sharedWith: { $push: "$sharedWith.userName" },
         },
       },
     ]);
