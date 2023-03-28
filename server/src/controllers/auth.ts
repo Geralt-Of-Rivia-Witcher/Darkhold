@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 
 import userModel from "../models/users";
 
@@ -56,6 +55,21 @@ export const signIn = async (
 
     return res.status(200).cookie("auth_token", token).json({
       message: "Signed in successfully",
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const signOut = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    return res.status(200).clearCookie("auth_token").json({
+      message: "Signed out successfully",
     });
   } catch (error) {
     console.log(error);

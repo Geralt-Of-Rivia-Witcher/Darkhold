@@ -7,15 +7,14 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { BACKEND_URL } from "../../constants/index.js";
 
 import "./Navbar.styles.css";
 
 function Navbar() {
-  var username, isLoggedIn;
-
+  const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const open = Boolean(anchorElUser);
 
@@ -29,11 +28,11 @@ function Navbar() {
 
   function logout() {
     axios
-      .post(`${BACKEND_URL}/logout`, { withCredentials: true })
+      .get(`${BACKEND_URL}/signOut`, { withCredentials: true })
       .then((success) => {
         handleCloseUserMenu();
         toast(success.data.message, { type: "success" });
-        <Navigate to="/" replace />;
+        navigate("/");
       })
       .catch((error) => {
         toast(error.response.data.message, { type: "error" });
@@ -47,11 +46,11 @@ function Navbar() {
           <h1 className="navbar-heading">DARKHOLD</h1>
         </a>
 
-        {isLoggedIn ? (
+        {document.cookie.length > 12 ? (
           <>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu}>
-                <Avatar alt={username} src="/static/images/avatar/2.jpg" />
+                <Avatar src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
