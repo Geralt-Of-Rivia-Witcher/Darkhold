@@ -66,6 +66,31 @@ function Dashboard() {
       });
   }
 
+  function shareFile(fileId, username) {
+    axios
+      .post(
+        `${BACKEND_URL}/shareFile`,
+        {
+          fileId: fileId,
+          shareWith: username,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((response) => {
+        fetchFilesList();
+        setShowFileInfoModal(false);
+        document.getElementById("credential-container").style = "none";
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   return document.cookie.length > 12 ? (
     <>
       <Navbar />
@@ -129,6 +154,7 @@ function Dashboard() {
           setShowFileInfoModal={setShowFileInfoModal}
           // setFetchedCredentials={setFetchedCredentials}
           selectedFile={selectedFile}
+          shareFile={shareFile}
         />
       ) : null}
     </>

@@ -91,6 +91,11 @@ function ShowCredential(props) {
             onChange={(event) => {
               setUsername(event.target.value);
             }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                props.shareFile(props.selectedFile._id, username);
+              }
+            }}
           />
         </div>
         {/* <div className="show-credential-input-field-container">
