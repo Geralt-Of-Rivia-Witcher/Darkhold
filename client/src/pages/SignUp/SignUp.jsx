@@ -20,19 +20,23 @@ function SignUp() {
     e.preventDefault();
     if (password === reEnteredPassword) {
       axios
-        .post(`${BACKEND_URL}/signUp`, {
-          userName: username.trim(),
-          password: password.trim(),
-        })
+        .post(
+          `${BACKEND_URL}/signUp`,
+          {
+            userName: username.trim(),
+            password: password.trim(),
+          },
+          { withCredentials: true }
+        )
         .then((success) => {
           toast(success.data.message, { type: "success" });
-          navigate("/login");
+          navigate("/dashboard");
         })
         .catch((error) => {
           toast(error.response.data.message, { type: "error" });
         });
     } else {
-      toast("Passwords should be same.", { type: "warning" });
+      toast("Passwords must be same.", { type: "warning" });
     }
   };
 

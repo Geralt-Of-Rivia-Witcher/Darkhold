@@ -17,14 +17,20 @@ export const signUp = async (
       });
     }
 
-    await userModel.create({
+    const user = await userModel.create({
       userName: req.body.userName,
       password: await bcrypt.hash(req.body.password, saltRounds),
     });
 
-    return res.status(200).json({
-      message: "Signed up successfully",
-    });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!);
+
+    return res
+      .status(201)
+      .cookie("auth_token", token)
+      .cookie("username", user.userName)
+      .json({
+        message: "Signed up successfully",
+      });
   } catch (error) {
     console.log(error);
 

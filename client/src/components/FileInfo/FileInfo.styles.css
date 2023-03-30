@@ -42,7 +42,7 @@
     align-items: center;
 }
 
-.MuiInputBase-input {
+.show-credential-input-field-container .MuiInputBase-input {
     text-align: center;
 }
 

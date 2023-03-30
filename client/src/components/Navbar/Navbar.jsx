@@ -47,7 +47,7 @@ function Navbar() {
           <h1 className="navbar-heading">DARKHOLD</h1>
         </a>
 
-        {document.cookie.length > 12 ? (
+        {Cookies.get("auth_token") ? (
           <>
             <Tooltip title={Cookies.get("username")}>
               <IconButton onClick={handleOpenUserMenu}>

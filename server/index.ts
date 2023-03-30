@@ -19,8 +19,6 @@ declare global {
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT;
-const MONGO_URI = process.env.MONGO_URI;
 
 app.use(express.json());
 app.use(
@@ -38,7 +36,7 @@ app.use(
 );
 
 mongoose
-  .connect(MONGO_URI!)
+  .connect(process.env.MONGO_URI!)
   .then(() => {
     console.log("[server]: Connected to MongoDB");
   })
@@ -53,6 +51,8 @@ mongoose
 app.use("/api/", authRoutes);
 app.use("/api/", fileRoutes);
 
-app.listen(PORT, () => {
-  console.log(`[server]: Server is running at http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(
+    `[server]: Server is running at http://localhost:${process.env.PORT}`
+  );
 });

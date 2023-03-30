@@ -105,7 +105,7 @@ function ShowCredential(props) {
                 })}
               </div>
             ) : (
-              <> </>
+              <></>
             )}
 
             <div className="show-credential-input-field-container">
