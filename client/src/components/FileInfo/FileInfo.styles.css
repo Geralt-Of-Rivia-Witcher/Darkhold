@@ -10,7 +10,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: center; */
+    justify-content: center;
     border-radius: 3rem;
     gap: 1rem;
     background-color: #1E2029;
@@ -18,21 +18,21 @@
 
 .file-details {
     color: white;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-family: 'Source Sans Pro', sans-serif;
     text-align: center;
-    margin: 35px 30px 0px;
+    margin: 5px 30px 0px;
 }
 
 .file-sub-details {
     margin: 0px;
-    font-size: 1.9rem;
+    font-size: 1.5rem;
 }
 
-.copy-icon {
+.remove-icon {
     color: red;
     margin: 0 15px -4px;
-    font-size: 35px !important;
+    font-size: 30px !important;
 }
 
 .show-credential-input-field-container {
@@ -40,6 +40,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.MuiInputBase-input {
+    text-align: center;
 }
 
 .show-credential-input-field {
@@ -51,9 +55,16 @@
     --animate-duration: 1s;
 }
 
-.delete-credential-icon {
+.download-file-icon {
+    color: white;
+    font-size: 3rem !important;
+    float: left;
+}
+
+.delete-file-icon {
     color: red;
     font-size: 3rem !important;
+    float: right;
 }
 
 .delete-button-yes {
@@ -83,8 +94,8 @@
         margin-top: -18em; /* set to a negative number 1/2 of your height */
         margin-left: -18em; /* set to a negative number 1/2 of your width */
     }
-    .copy-icon {
-        font-size: 30px !important;
+    .remove-icon {
+        font-size: 25px !important;
     }
 }
 
@@ -114,8 +125,8 @@
     .MuiOutlinedInput-root {
         height: 75% !important;
     }
-    .copy-icon {
-        font-size: 28px !important;
+    .remove-icon {
+        font-size: 23px !important;
     }
 }
 

@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import { BACKEND_URL } from "../../constants/index.js";
 import EachCredentialContainer from "./EachCredentialContainer";
-import FileInfo from "../../components/ShowCredential/FileInfo.jsx";
+import FileInfo from "../../components/FileInfo/FileInfo.jsx";
 
 import "./Dashboard.styles.css";
 
@@ -41,6 +41,7 @@ function Dashboard() {
         link.click();
         link.remove();
         document.getElementById("credential-container").style = "none";
+        setShowFileInfoModal(false);
       })
       .catch((error) => {
         console.log(error);
@@ -175,6 +176,7 @@ function Dashboard() {
           selectedFile={selectedFile}
           shareFile={shareFile}
           removeAccessFromFile={removeAccessFromFile}
+          downloadFile={downloadFile}
         />
       ) : null}
     </>

@@ -8,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 import { BACKEND_URL } from "../../constants/index.js";
 
@@ -48,7 +49,7 @@ function Navbar() {
 
         {document.cookie.length > 12 ? (
           <>
-            <Tooltip title="Open settings">
+            <Tooltip title={Cookies.get("username")}>
               <IconButton onClick={handleOpenUserMenu}>
                 <Avatar src="/static/images/avatar/2.jpg" />
               </IconButton>

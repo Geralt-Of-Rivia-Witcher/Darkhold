@@ -9,6 +9,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import CancelIcon from "@mui/icons-material/Cancel";
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
+import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 
 import { BACKEND_URL } from "../../constants/index.js";
 
@@ -73,54 +74,95 @@ function ShowCredential(props) {
           Owner
           <p className="file-sub-details">{props.selectedFile.owner}</p>
         </div>
-        <div className="file-details">
-          Shared with
-          {props.selectedFile.sharedWith.map((eachUser, index) => {
-            return (
-              <table style={{ width: "100%" }}>
-                <tr>
-                  <td style={{ width: "85%" }}>
-                    <p className="file-sub-details" key={index}>
-                      {eachUser}
-                    </p>
-                  </td>
-                  {Cookies.get("username") === props.selectedFile.owner ? (
-                    <td>
-                      <RemoveCircleOutlineOutlinedIcon
-                        className="copy-icon"
-                        onClick={(event) => {
-                          props.removeAccessFromFile(
-                            props.selectedFile._id,
-                            eachUser
-                          );
-                        }}
-                      />
-                    </td>
-                  ) : (
-                    <></>
-                  )}
-                </tr>
-              </table>
-            );
-          })}
+        {Cookies.get("username") === props.selectedFile.owner ? (
+          <>
+            {props.selectedFile.sharedWith.length > 0 ? (
+              <div className="file-details">
+                Shared with
+                {props.selectedFile.sharedWith.map((eachUser, index) => {
+                  return (
+                    <table style={{ width: "100%" }}>
+                      <tr>
+                        <td style={{ width: "80%" }}>
+                          <p className="file-sub-details" key={index}>
+                            {eachUser}
+                          </p>
+                        </td>
+                        <td>
+                          <RemoveCircleOutlineOutlinedIcon
+                            className="remove-icon"
+                            onClick={(event) => {
+                              props.removeAccessFromFile(
+                                props.selectedFile._id,
+                                eachUser
+                              );
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    </table>
+                  );
+                })}
+              </div>
+            ) : (
+              <> </>
+            )}
+
+            <div className="show-credential-input-field-container">
+              <TextField
+                required
+                className="show-credential-input-field"
+                placeholder="Enter a username to share this file"
+                margin="dense"
+                value={username}
+                onChange={(event) => {
+                  setUsername(event.target.value);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    props.shareFile(props.selectedFile._id, username);
+                  }
+                }}
+              />
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+        <div style={{ width: "50%", position: "absolute", bottom: "50px" }}>
+          {deleteButtonStatus ? (
+            <>
+              <DoneAllIcon
+                className="delete-button-yes"
+                // onClick={() => {
+                //   deleteCredential(props.fetchedCredentials._id);
+                // }}
+              />
+              <CancelIcon
+                className="delete-button-no"
+                onClick={() => {
+                  setDeleteButtonStatus(false);
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <DownloadOutlinedIcon
+                className="download-file-icon"
+                onClick={() => {
+                  props.downloadFile(props.selectedFile);
+                }}
+              />
+              <DeleteForeverIcon
+                className="delete-file-icon"
+                onClick={() => {
+                  setDeleteButtonStatus(true);
+                }}
+              />
+            </>
+          )}
         </div>
-        <div className="show-credential-input-field-container">
-          <TextField
-            required
-            className="show-credential-input-field"
-            placeholder="Enter a username to share this file"
-            margin="dense"
-            value={username}
-            onChange={(event) => {
-              setUsername(event.target.value);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                props.shareFile(props.selectedFile._id, username);
-              }
-            }}
-          />
-        </div>
+
         {/* <div className="show-credential-input-field-container">
           <TextField
             required
