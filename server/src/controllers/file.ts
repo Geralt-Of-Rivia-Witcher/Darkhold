@@ -311,9 +311,19 @@ export const removeAccessFromFile = async (
       });
     }
 
+    const user = await userModel.findOne({
+      userName: req.body.userName,
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
     if (
       requestedFile.sharedWith.some((userIDs) => {
-        return userIDs.toString() === req.body.userId;
+        return userIDs.equals(user._id);
       })
     ) {
       await fileModel.updateOne(
@@ -322,7 +332,7 @@ export const removeAccessFromFile = async (
         },
         {
           $pull: {
-            sharedWith: new mongoose.Types.ObjectId(req.body.userId),
+            sharedWith: user._id,
           },
         }
       );

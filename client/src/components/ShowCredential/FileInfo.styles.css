@@ -30,8 +30,8 @@
 }
 
 .copy-icon {
-    color: white;
-    margin-left: 15px;
+    color: red;
+    margin: 0 15px -4px;
     font-size: 35px !important;
 }
 

@@ -76,9 +76,28 @@ function Dashboard() {
         },
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+        }
+      )
+      .then((response) => {
+        fetchFilesList();
+        setShowFileInfoModal(false);
+        document.getElementById("credential-container").style = "none";
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function removeAccessFromFile(fileId, userName) {
+    axios
+      .post(
+        `${BACKEND_URL}/removeAccessFromFile`,
+        {
+          fileId: fileId,
+          userName: userName,
+        },
+        {
+          withCredentials: true,
         }
       )
       .then((response) => {
@@ -155,6 +174,7 @@ function Dashboard() {
           // setFetchedCredentials={setFetchedCredentials}
           selectedFile={selectedFile}
           shareFile={shareFile}
+          removeAccessFromFile={removeAccessFromFile}
         />
       ) : null}
     </>

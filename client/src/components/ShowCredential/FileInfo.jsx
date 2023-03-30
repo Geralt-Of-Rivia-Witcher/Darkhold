@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import CancelIcon from "@mui/icons-material/Cancel";
+import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 
 import { BACKEND_URL } from "../../constants/index.js";
 
@@ -75,9 +77,30 @@ function ShowCredential(props) {
           Shared with
           {props.selectedFile.sharedWith.map((eachUser, index) => {
             return (
-              <p className="file-sub-details" key={index}>
-                {eachUser}
-              </p>
+              <table style={{ width: "100%" }}>
+                <tr>
+                  <td style={{ width: "85%" }}>
+                    <p className="file-sub-details" key={index}>
+                      {eachUser}
+                    </p>
+                  </td>
+                  {Cookies.get("username") === props.selectedFile.owner ? (
+                    <td>
+                      <RemoveCircleOutlineOutlinedIcon
+                        className="copy-icon"
+                        onClick={(event) => {
+                          props.removeAccessFromFile(
+                            props.selectedFile._id,
+                            eachUser
+                          );
+                        }}
+                      />
+                    </td>
+                  ) : (
+                    <></>
+                  )}
+                </tr>
+              </table>
             );
           })}
         </div>

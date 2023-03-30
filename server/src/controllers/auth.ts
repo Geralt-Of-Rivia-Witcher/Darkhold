@@ -53,9 +53,13 @@ export const signIn = async (
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!);
 
-    return res.status(200).cookie("auth_token", token).json({
-      message: "Signed in successfully",
-    });
+    return res
+      .status(200)
+      .cookie("auth_token", token)
+      .cookie("username", user.userName)
+      .json({
+        message: "Signed in successfully",
+      });
   } catch (error) {
     console.log(error);
 
