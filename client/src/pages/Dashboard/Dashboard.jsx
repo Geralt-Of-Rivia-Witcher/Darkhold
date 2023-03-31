@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
+import Cookies from "js-cookie";
 
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import { BACKEND_URL } from "../../constants/index.js";
@@ -126,7 +127,7 @@ function Dashboard() {
       });
   }
 
-  return document.cookie.length > 12 ? (
+  return Cookies.get("auth_token") ? (
     <>
       <Navbar />
       <div className="credential-container" id="credential-container">
@@ -147,7 +148,6 @@ function Dashboard() {
                   document.getElementById("credential-container").style =
                     "filter:blur(100px); pointer-events: none";
                   setShowFileInfoModal(true);
-                  // downloadFile(eachFile);
                   setSelectedFile(eachFile);
                 }}
               >
@@ -185,9 +185,7 @@ function Dashboard() {
       </div>
       {showFileInfoModal ? (
         <FileInfo
-          // fetchedCredentials={fetchedCredentials[clickedIndex]}
           setShowFileInfoModal={setShowFileInfoModal}
-          // setFetchedCredentials={setFetchedCredentials}
           selectedFile={selectedFile}
           shareFile={shareFile}
           removeAccessFromFile={removeAccessFromFile}

@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import { BACKEND_URL } from "../../constants/index.js";
@@ -17,12 +18,9 @@ function SignUp() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/check-logged-in`, { withCredentials: true })
-      .then((success) => {
-        navigate("/dashboard");
-      })
-      .catch((error) => {});
+    if (Cookies.get("auth_token")) {
+      navigate("/dashboard");
+    }
   }, []);
 
   const login = (e) => {
