@@ -47,25 +47,6 @@ function ShowCredential(props) {
     };
   });
 
-  const deleteCredential = (credentialId) => {
-    axios
-      .delete(
-        `${BACKEND_URL}/delete-credentials?credentialId=${credentialId}`,
-        {
-          withCredentials: true,
-        }
-      )
-      .then((success) => {
-        toast(success.data.message, { type: "success" });
-        props.setShowCredentialModal(false);
-        document.getElementById("credential-container").style = "none";
-        props.setFetchedCredentials(success.data.credentials);
-      })
-      .catch((error) => {
-        toast(error.response.data.message, { type: "error" });
-      });
-  };
-
   return (
     <>
       <div className="show-credential-container" id="show-credential-container">
@@ -129,39 +110,58 @@ function ShowCredential(props) {
         ) : (
           <></>
         )}
-        <div style={{ width: "50%", position: "absolute", bottom: "50px" }}>
-          {deleteButtonStatus ? (
-            <>
-              <DoneAllIcon
-                className="delete-button-yes"
-                // onClick={() => {
-                //   deleteCredential(props.fetchedCredentials._id);
-                // }}
-              />
-              <CancelIcon
-                className="delete-button-no"
-                onClick={() => {
-                  setDeleteButtonStatus(false);
-                }}
-              />
-            </>
-          ) : (
-            <>
-              <DownloadOutlinedIcon
-                className="download-file-icon"
-                onClick={() => {
-                  props.downloadFile(props.selectedFile);
-                }}
-              />
-              <DeleteForeverIcon
-                className="delete-file-icon"
-                onClick={() => {
-                  setDeleteButtonStatus(true);
-                }}
-              />
-            </>
-          )}
-        </div>
+
+        {Cookies.get("username") === props.selectedFile.owner ? (
+          <div style={{ width: "50%", position: "absolute", bottom: "50px" }}>
+            {deleteButtonStatus ? (
+              <>
+                <DoneAllIcon
+                  className="delete-button-yes"
+                  onClick={() => {
+                    props.deleteFile(props.selectedFile._id);
+                  }}
+                />
+                <CancelIcon
+                  className="delete-button-no"
+                  onClick={() => {
+                    setDeleteButtonStatus(false);
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <DownloadOutlinedIcon
+                  className="download-file-icon"
+                  onClick={() => {
+                    props.downloadFile(props.selectedFile);
+                  }}
+                />
+                <DeleteForeverIcon
+                  className="delete-file-icon"
+                  onClick={() => {
+                    setDeleteButtonStatus(true);
+                  }}
+                />
+              </>
+            )}
+          </div>
+        ) : (
+          <div
+            style={{
+              width: "50%",
+              position: "absolute",
+              bottom: "50px",
+              textAlign: "center",
+            }}
+          >
+            <DownloadOutlinedIcon
+              className="download-file-icon"
+              onClick={() => {
+                props.downloadFile(props.selectedFile);
+              }}
+            />
+          </div>
+        )}
 
         {/* <div className="show-credential-input-field-container">
           <TextField

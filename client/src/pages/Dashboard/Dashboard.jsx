@@ -111,6 +111,21 @@ function Dashboard() {
       });
   }
 
+  function deleteFile(fileId) {
+    axios
+      .delete(`${BACKEND_URL}/deleteFile/${fileId}`, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        fetchFilesList();
+        setShowFileInfoModal(false);
+        document.getElementById("credential-container").style = "none";
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   return document.cookie.length > 12 ? (
     <>
       <Navbar />
@@ -177,6 +192,7 @@ function Dashboard() {
           shareFile={shareFile}
           removeAccessFromFile={removeAccessFromFile}
           downloadFile={downloadFile}
+          deleteFile={deleteFile}
         />
       ) : null}
     </>
