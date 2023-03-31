@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import { BACKEND_URL } from "../../constants/index.js";
@@ -43,6 +44,7 @@ function Dashboard() {
         link.remove();
         document.getElementById("credential-container").style = "none";
         setShowFileInfoModal(false);
+        toast("File downloaded successfully", { type: "success" });
       })
       .catch((error) => {
         console.log(error);
@@ -50,6 +52,7 @@ function Dashboard() {
   }
 
   function uploadFile(file) {
+    const toastId = toast.loading("Uploading file...");
     const formData = new FormData();
     formData.append("file", file);
 
@@ -62,6 +65,13 @@ function Dashboard() {
       })
       .then((response) => {
         fetchFilesList();
+        toast.update(toastId, {
+          render: response.data.message,
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+          closeOnClick: true,
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -84,6 +94,7 @@ function Dashboard() {
         fetchFilesList();
         setShowFileInfoModal(false);
         document.getElementById("credential-container").style = "none";
+        toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
         console.log(error);
@@ -106,6 +117,7 @@ function Dashboard() {
         fetchFilesList();
         setShowFileInfoModal(false);
         document.getElementById("credential-container").style = "none";
+        toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
         console.log(error);
@@ -121,6 +133,7 @@ function Dashboard() {
         fetchFilesList();
         setShowFileInfoModal(false);
         document.getElementById("credential-container").style = "none";
+        toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
         console.log(error);
