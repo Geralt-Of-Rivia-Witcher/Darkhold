@@ -47,7 +47,7 @@ function Dashboard() {
         toast("File downloaded successfully", { type: "success" });
       })
       .catch((error) => {
-        console.log(error);
+        toast(error.response.data.message, { type: "error" });
       });
   }
 
@@ -74,7 +74,7 @@ function Dashboard() {
         });
       })
       .catch((error) => {
-        console.log(error);
+        toast(error.response.data.message, { type: "error" });
       });
   }
 
@@ -97,7 +97,7 @@ function Dashboard() {
         toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
-        console.log(error);
+        toast(error.response.data.message, { type: "error" });
       });
   }
 
@@ -120,7 +120,7 @@ function Dashboard() {
         toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
-        console.log(error);
+        toast(error.response.data.message, { type: "error" });
       });
   }
 
@@ -136,7 +136,7 @@ function Dashboard() {
         toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
-        console.log(error);
+        toast(error.response.data.message, { type: "error" });
       });
   }
 

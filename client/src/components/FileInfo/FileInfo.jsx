@@ -48,25 +48,25 @@ function ShowCredential(props) {
                 Shared with
                 {props.selectedFile.sharedWith.map((eachUser, index) => {
                   return (
-                    <table style={{ width: "100%" }}>
-                      <tr>
-                        <td style={{ width: "80%" }}>
-                          <p className="file-sub-details" key={index}>
-                            {eachUser}
-                          </p>
-                        </td>
-                        <td>
-                          <RemoveCircleOutlineOutlinedIcon
-                            className="remove-icon"
-                            onClick={(event) => {
-                              props.removeAccessFromFile(
-                                props.selectedFile._id,
-                                eachUser
-                              );
-                            }}
-                          />
-                        </td>
-                      </tr>
+                    <table style={{ width: "100%" }} key={index}>
+                      <tbody>
+                        <tr>
+                          <td style={{ width: "80%" }}>
+                            <p className="file-sub-details">{eachUser}</p>
+                          </td>
+                          <td>
+                            <RemoveCircleOutlineOutlinedIcon
+                              className="remove-icon"
+                              onClick={(event) => {
+                                props.removeAccessFromFile(
+                                  props.selectedFile._id,
+                                  eachUser
+                                );
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   );
                 })}
