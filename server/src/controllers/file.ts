@@ -347,3 +347,35 @@ export const removeAccessFromFile = async (
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const deleteFile = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const requestedFile = await fileModel.findOne({
+      _id: req.params.fileId,
+      owner: req.user._id,
+    });
+
+    if (!requestedFile) {
+      return res.status(404).json({
+        message: "File not found",
+      });
+    }
+
+    await AWS.deleteFromS3(requestedFile.fileKey);
+
+    await fileModel.deleteOne({
+      _id: req.params.fileId,
+    });
+
+    return res.status(200).json({
+      message: "File deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};

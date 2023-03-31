@@ -23,4 +23,6 @@ router.post(
   file.removeAccessFromFile
 );
 
+router.delete("/deleteFile/:fileId", authMiddleware.verify, file.deleteFile);
+
 export default router;

@@ -2,6 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 
 const s3Client = new S3Client({
@@ -44,4 +45,13 @@ export const downloadFromS3 = async (key: string): Promise<Buffer> => {
       resolve(Buffer.concat(responseDataChunks))
     );
   });
+};
+
+export const deleteFromS3 = async (key: string) => {
+  await s3Client.send(
+    new DeleteObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME!,
+      Key: key,
+    })
+  );
 };
