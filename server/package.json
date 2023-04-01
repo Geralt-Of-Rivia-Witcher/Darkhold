@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
-    "@types/node": "^18.15.11"
+    "@types/node": "^18.15.11",
+    "ts-node-dev": "^2.0.0"
   }
 }

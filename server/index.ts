@@ -56,3 +56,7 @@ app.listen(process.env.PORT, () => {
     `[server]: Server is running at http://localhost:${process.env.PORT}`
   );
 });
+
+app.get("/", (req, res) => {
+  res.status(200).send("Pew Pew Pew 🔫🔫🔫");
+});
