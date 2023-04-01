@@ -78,9 +78,13 @@ export const signOut = async (
   res: Response
 ): Promise<Response> => {
   try {
-    return res.status(200).clearCookie("auth_token").json({
-      message: "Signed out successfully",
-    });
+    return res
+      .status(200)
+      .clearCookie("auth_token")
+      .clearCookie("username")
+      .json({
+        message: "Signed out successfully",
+      });
   } catch (error) {
     console.log(error);
 

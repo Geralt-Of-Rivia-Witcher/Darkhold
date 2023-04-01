@@ -31,6 +31,8 @@ function Navbar() {
     axios
       .get(`${BACKEND_URL}/signOut`, { withCredentials: true })
       .then((success) => {
+        Cookies.remove("auth_token");
+        Cookies.remove("username");
         handleCloseUserMenu();
         toast(success.data.message, { type: "success" });
         navigate("/");
