@@ -27,7 +27,6 @@ export const signUp = async (
     return res
       .status(201)
       .cookie("auth_token", token)
-      .cookie("username", user.userName)
       .json({
         message: "Signed up successfully",
         data: {
@@ -65,7 +64,6 @@ export const signIn = async (
     return res
       .status(200)
       .cookie("auth_token", token)
-      .cookie("username", user.userName)
       .json({
         message: "Signed in successfully",
         data: {
