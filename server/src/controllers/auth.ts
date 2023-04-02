@@ -30,6 +30,9 @@ export const signUp = async (
       .cookie("username", user.userName)
       .json({
         message: "Signed up successfully",
+        data: {
+          username: user.userName,
+        },
       });
   } catch (error) {
     console.log(error);
@@ -65,6 +68,9 @@ export const signIn = async (
       .cookie("username", user.userName)
       .json({
         message: "Signed in successfully",
+        data: {
+          username: user.userName,
+        },
       });
   } catch (error) {
     console.log(error);
