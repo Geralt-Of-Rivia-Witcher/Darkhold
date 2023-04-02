@@ -4,6 +4,7 @@ import {
   GetObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
+import { Readable } from "stream";
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -33,17 +34,16 @@ export const downloadFromS3 = async (key: string): Promise<Buffer> => {
       })
     );
 
-    let responseDataChunks: Buffer[] = [];
+    const stream = response.Body as Readable;
+    const chunks: Buffer[] = [];
 
-    response.Body?.once("error", (err: any) => reject(err));
-
-    response.Body?.on("data", (chunk: Buffer) =>
-      responseDataChunks.push(chunk)
-    );
-
-    response.Body?.once("end", () =>
-      resolve(Buffer.concat(responseDataChunks))
-    );
+    stream.on("data", (chunk: Buffer) => {
+      chunks.push(chunk);
+    });
+    stream.once("end", () => {
+      resolve(Buffer.concat(chunks));
+    });
+    stream.once("error", reject);
   });
 };
 

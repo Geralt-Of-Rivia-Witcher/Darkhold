@@ -29,6 +29,7 @@ function Dashboard() {
   }
 
   function downloadFile(file) {
+    const toastId = toast.loading("Downloading file...");
     axios
       .get(`${BACKEND_URL}/downloadFile/${file._id}`, {
         withCredentials: true,
@@ -44,7 +45,13 @@ function Dashboard() {
         link.remove();
         document.getElementById("credential-container").style = "none";
         setShowFileInfoModal(false);
-        toast("File downloaded successfully", { type: "success" });
+        toast.update(toastId, {
+          render: "File downloaded successfully",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+          closeOnClick: true,
+        });
       })
       .catch((error) => {
         toast(error.response.data.message, { type: "error" });

@@ -30,7 +30,7 @@ app.use(
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "darkhold.siddhantkumarsingh.me",
+    origin: ["darkhold.siddhantkumarsingh.me", "http://localhost:3000"],
     credentials: true,
   })
 );
