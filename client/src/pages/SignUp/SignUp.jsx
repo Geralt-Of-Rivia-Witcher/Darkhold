@@ -17,6 +17,8 @@ function SignUp() {
   const [reEnteredPassword, setReEnteredPassword] = useState("");
 
   const signUp = (e) => {
+    const toastId = toast.loading("Please wait...");
+
     e.preventDefault();
     if (password === reEnteredPassword) {
       axios
@@ -30,11 +32,23 @@ function SignUp() {
         )
         .then((success) => {
           localStorage.setItem("username", success.data.data.username);
-          toast(success.data.message, { type: "success" });
+          toast.update(toastId, {
+            render: success.data.message,
+            type: "success",
+            isLoading: false,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
           navigate("/dashboard");
         })
         .catch((error) => {
-          toast(error.response.data.message, { type: "error" });
+          toast.update(toastId, {
+            render: error.response.data.message,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
         });
     } else {
       toast("Passwords must be same.", { type: "warning" });

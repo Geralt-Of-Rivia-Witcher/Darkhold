@@ -31,6 +31,8 @@ function SignUp() {
   };
 
   const login = (e) => {
+    const toastId = toast.loading("Please wait...");
+
     e.preventDefault();
     axios
       .post(
@@ -43,11 +45,23 @@ function SignUp() {
       )
       .then((success) => {
         localStorage.setItem("username", success.data.data.username);
-        toast(success.data.message, { type: "success" });
+        toast.update(toastId, {
+          render: success.data.message,
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+          closeOnClick: true,
+        });
         navigate("/dashboard");
       })
       .catch((error) => {
-        toast(error.response.data.message, { type: "error" });
+        toast.update(toastId, {
+          render: error.response.data.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+          closeOnClick: true,
+        });
       });
   };
 
