@@ -38,6 +38,7 @@ function Dashboard() {
 
   function downloadFile(file) {
     const toastId = toast.loading("Downloading file...");
+
     axios
       .get(`${BACKEND_URL}/downloadFile/${file._id}`, {
         withCredentials: true,
@@ -72,7 +73,13 @@ function Dashboard() {
             closeOnClick: true,
           });
         } else {
-          toast(error.response.data.message, { type: "error" });
+          toast.update(toastId, {
+            render: error.response.data.message,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
         }
       });
   }
@@ -110,7 +117,13 @@ function Dashboard() {
             closeOnClick: true,
           });
         } else {
-          toast(error.response.data.message, { type: "error" });
+          toast.update(toastId, {
+            render: error.response.data.message,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
         }
       });
   }
@@ -172,6 +185,8 @@ function Dashboard() {
   }
 
   function deleteFile(fileId) {
+    const toastId = toast.loading("Deleting file...");
+
     axios
       .delete(`${BACKEND_URL}/deleteFile/${fileId}`, {
         withCredentials: true,
@@ -180,14 +195,32 @@ function Dashboard() {
         fetchFilesList();
         setShowFileInfoModal(false);
         document.getElementById("credential-container").style = "none";
-        toast(response.data.message, { type: "success" });
+        toast.update(toastId, {
+          render: response.data.message,
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+          closeOnClick: true,
+        });
       })
       .catch((error) => {
         if (error.response.status === 401) {
-          toast("Some error occured. Please Login again.", { type: "error" });
+          toast.update(toastId, {
+            render: "Some error occured. Please Login again.",
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
           navigate("/login");
         } else {
-          toast(error.response.data.message, { type: "error" });
+          toast.update(toastId, {
+            render: error.response.data.message,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
         }
       });
   }
