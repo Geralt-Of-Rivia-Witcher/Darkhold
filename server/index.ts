@@ -7,6 +7,7 @@ import cors from "cors";
 
 import authRoutes from "./src/routes/auth";
 import fileRoutes from "./src/routes/file";
+import { corsOptions } from "./src/config/cors";
 
 declare global {
   namespace Express {
@@ -28,12 +29,7 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: ["darkhold.siddhantkumarsingh.me", "http://localhost:3000"],
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 
 mongoose
   .connect(process.env.MONGO_URI!)
