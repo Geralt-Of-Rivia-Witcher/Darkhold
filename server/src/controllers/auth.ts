@@ -91,3 +91,32 @@ export const signOut = async (
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const tokenStatusVerification = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const token = jwt.verify(req.cookies.auth_token, process.env.JWT_SECRET!);
+
+    if (!token) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Authorized",
+    });
+  } catch (error: any) {
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        message: error.message,
+      });
+    }
+
+    console.log(error);
+
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
