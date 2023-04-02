@@ -8,7 +8,6 @@ import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 
 import { BACKEND_URL } from "../../constants/index.js";
 
@@ -31,8 +30,7 @@ function Navbar() {
     axios
       .get(`${BACKEND_URL}/signOut`, { withCredentials: true })
       .then((success) => {
-        Cookies.remove("auth_token");
-        Cookies.remove("username");
+        localStorage.removeItem("username");
         handleCloseUserMenu();
         toast(success.data.message, { type: "success" });
         navigate("/");
@@ -49,9 +47,9 @@ function Navbar() {
           <h1 className="navbar-heading">DARKHOLD</h1>
         </a>
 
-        {Cookies.get("auth_token") ? (
+        {localStorage.getItem("username") ? (
           <>
-            <Tooltip title={Cookies.get("username")}>
+            <Tooltip title={localStorage.getItem("username")}>
               <IconButton onClick={handleOpenUserMenu}>
                 <Avatar src="/static/images/avatar/2.jpg" />
               </IconButton>

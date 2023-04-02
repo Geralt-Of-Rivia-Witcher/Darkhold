@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import { BACKEND_URL } from "../../constants/index.js";
@@ -30,7 +29,7 @@ function SignUp() {
           { withCredentials: true }
         )
         .then((success) => {
-          Cookies.set("username", success.data.data.username);
+          localStorage.setItem("username", success.data.data.username);
           toast(success.data.message, { type: "success" });
           navigate("/dashboard");
         })

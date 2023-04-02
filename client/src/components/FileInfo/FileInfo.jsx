@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
-import Cookies from "js-cookie";
 
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
@@ -41,7 +40,7 @@ function ShowCredential(props) {
           Owner
           <p className="file-sub-details">{props.selectedFile.owner}</p>
         </div>
-        {Cookies.get("username") === props.selectedFile.owner ? (
+        {localStorage.getItem("username") === props.selectedFile.owner ? (
           <>
             {props.selectedFile.sharedWith.length > 0 ? (
               <div className="file-details">
@@ -97,7 +96,7 @@ function ShowCredential(props) {
           <></>
         )}
 
-        {Cookies.get("username") === props.selectedFile.owner ? (
+        {localStorage.getItem("username") === props.selectedFile.owner ? (
           <div style={{ width: "50%", position: "absolute", bottom: "50px" }}>
             {deleteButtonStatus ? (
               <>
