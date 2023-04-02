@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
-import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 import Navbar from "../../components/Navbar/Navbar.jsx";
@@ -15,6 +14,8 @@ import "./Dashboard.styles.css";
 function Dashboard() {
   useEffect(fetchFilesList, []);
 
+  const navigate = useNavigate();
+
   const [fetchedFileList, setFetchedFileList] = useState([]);
   const [showFileInfoModal, setShowFileInfoModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -25,7 +26,14 @@ function Dashboard() {
       .then((response) => {
         setFetchedFileList(response.data.files);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        if (error.response.status === 401) {
+          navigate("/login");
+          toast("Some error occured. Please login again", { type: "error" });
+        } else {
+          navigate("/dashboard");
+        }
+      });
   }
 
   function downloadFile(file) {
@@ -54,7 +62,18 @@ function Dashboard() {
         });
       })
       .catch((error) => {
-        toast(error.response.data.message, { type: "error" });
+        if (error.response.status === 401) {
+          navigate("/login");
+          toast.update(toastId, {
+            render: "Donwload failed. Please login again",
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
+        } else {
+          toast(error.response.data.message, { type: "error" });
+        }
       });
   }
 
@@ -81,7 +100,18 @@ function Dashboard() {
         });
       })
       .catch((error) => {
-        toast(error.response.data.message, { type: "error" });
+        if (error.response.status === 401) {
+          navigate("/login");
+          toast.update(toastId, {
+            render: "Upload failed. Please login again",
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
+        } else {
+          toast(error.response.data.message, { type: "error" });
+        }
       });
   }
 
@@ -104,7 +134,12 @@ function Dashboard() {
         toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
-        toast(error.response.data.message, { type: "error" });
+        if (error.response.status === 401) {
+          toast("Some error occured. Please Login again.", { type: "error" });
+          navigate("/login");
+        } else {
+          toast(error.response.data.message, { type: "error" });
+        }
       });
   }
 
@@ -127,7 +162,12 @@ function Dashboard() {
         toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
-        toast(error.response.data.message, { type: "error" });
+        if (error.response.status === 401) {
+          toast("Some error occured. Please Login again.", { type: "error" });
+          navigate("/login");
+        } else {
+          toast(error.response.data.message, { type: "error" });
+        }
       });
   }
 
@@ -143,11 +183,16 @@ function Dashboard() {
         toast(response.data.message, { type: "success" });
       })
       .catch((error) => {
-        toast(error.response.data.message, { type: "error" });
+        if (error.response.status === 401) {
+          toast("Some error occured. Please Login again.", { type: "error" });
+          navigate("/login");
+        } else {
+          toast(error.response.data.message, { type: "error" });
+        }
       });
   }
 
-  return Cookies.get("auth_token") ? (
+  return (
     <>
       <Navbar />
       <div className="credential-container" id="credential-container">
@@ -214,8 +259,6 @@ function Dashboard() {
         />
       ) : null}
     </>
-  ) : (
-    <Navigate to="/login" />
   );
 }
 

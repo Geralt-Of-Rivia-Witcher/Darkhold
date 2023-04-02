@@ -18,10 +18,18 @@ function SignUp() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (Cookies.get("auth_token")) {
-      navigate("/dashboard");
-    }
+    checkTokenStatus();
   }, []);
+
+  const checkTokenStatus = () => {
+    axios
+      .get(`${BACKEND_URL}/verify`, {
+        withCredentials: true,
+      })
+      .then((success) => {
+        navigate("/dashboard");
+      });
+  };
 
   const login = (e) => {
     e.preventDefault();
@@ -35,6 +43,7 @@ function SignUp() {
         { withCredentials: true }
       )
       .then((success) => {
+        Cookies.set("username", success.data.data.username);
         toast(success.data.message, { type: "success" });
         navigate("/dashboard");
       })
