@@ -51,7 +51,13 @@ function SignUp() {
           });
         });
     } else {
-      toast("Passwords must be same.", { type: "warning" });
+      toast.update(toastId, {
+        render: "Passwords must be same.",
+        type: "warning",
+        isLoading: false,
+        autoClose: 5000,
+        closeOnClick: true,
+      });
     }
   };
 
