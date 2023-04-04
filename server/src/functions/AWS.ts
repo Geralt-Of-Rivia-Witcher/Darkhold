@@ -1,8 +1,10 @@
 import {
   S3Client,
   PutObjectCommand,
+  PutObjectCommandOutput,
   GetObjectCommand,
   DeleteObjectCommand,
+  DeleteObjectCommandOutput,
 } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
 
@@ -13,16 +15,14 @@ const s3Client = new S3Client({
 export const uploadToS3 = async (
   data: Buffer,
   key: string
-): Promise<object> => {
-  const file = await s3Client.send(
+): Promise<PutObjectCommandOutput> => {
+  return await s3Client.send(
     new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME!,
       Key: key,
       Body: data,
     })
   );
-
-  return file;
 };
 
 export const downloadFromS3 = async (key: string): Promise<Buffer> => {
@@ -47,8 +47,10 @@ export const downloadFromS3 = async (key: string): Promise<Buffer> => {
   });
 };
 
-export const deleteFromS3 = async (key: string) => {
-  await s3Client.send(
+export const deleteFromS3 = async (
+  key: string
+): Promise<DeleteObjectCommandOutput> => {
+  return await s3Client.send(
     new DeleteObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME!,
       Key: key,
