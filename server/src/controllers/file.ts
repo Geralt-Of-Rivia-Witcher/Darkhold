@@ -134,6 +134,12 @@ export const getFileList = async (
           fileName: { $first: "$fileName" },
           owner: { $first: "$owner.userName" },
           sharedWith: { $push: "$sharedWith.userName" },
+          createdAt: { $first: "$createdAt" },
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
       },
     ]);
